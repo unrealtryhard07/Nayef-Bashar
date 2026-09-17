@@ -1,0 +1,166 @@
+/* Site behaviour: language switch, contact details, quote form, header state, reveal-on-scroll. */
+(function () {
+  'use strict';
+
+  const SITE = window.SITE;
+  const I18N = window.I18N;
+  const LANG_KEY = 'nb-site-lang';
+  const SUPPORTED = ['en', 'ar'];
+  const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const HEADER_SCROLL_OFFSET = 24;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  let lang = 'en';
+  const t = (key) => (I18N[lang] && I18N[lang][key]) ?? I18N.en[key] ?? key;
+
+  const storage = {
+    get: () => { try { return localStorage.getItem(LANG_KEY); } catch { return null; } },
+    set: (v) => { try { localStorage.setItem(LANG_KEY, v); } catch { /* private mode: language just isn't remembered */ } },
+  };
+
+  /* ---------- language ---------- */
+  function applyLanguage(next) {
+    lang = SUPPORTED.includes(next) ? next : 'en';
+    const root = document.documentElement;
+    root.lang = lang;
+    root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.title = t('meta.title');
+    const year = String(new Date().getFullYear());
+
+    document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n).replace('{year}', year); });
+    // Only trusted strings from i18n.js are used here (they contain <em> accents).
+    document.querySelectorAll('[data-i18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+    document.getElementById('lang-toggle').setAttribute('aria-label', t('lang.label'));
+    fillContacts();
+    storage.set(lang);
+  }
+
+  /* ---------- contact details ---------- */
+  const whatsappUrl = (text = '') => `https://wa.me/${String(SITE.whatsapp).replace(/\D/g, '')}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
+
+  function fillContacts() {
+    const phone = document.querySelector('[data-contact="phone"]');
+    phone.textContent = SITE.phone;
+    phone.href = `tel:${SITE.phone.replace(/[^\d+]/g, '')}`;
+    phone.dir = 'ltr';
+    const wa = document.querySelector('[data-contact="whatsapp"]');
+    wa.textContent = `+${String(SITE.whatsapp).replace(/\D/g, '')}`;
+    wa.dir = 'ltr';
+    const email = document.querySelector('[data-contact="email"]');
+    email.textContent = SITE.email;
+    email.href = `mailto:${SITE.email}`;
+    document.querySelector('[data-contact="address"]').textContent = SITE.address[lang];
+    document.querySelector('[data-contact="hours"]').textContent = SITE.hours[lang];
+    document.querySelectorAll('[data-whatsapp]').forEach((a) => { a.href = whatsappUrl(); });
+  }
+
+  /* ---------- quote form ---------- */
+  function buildMessage(data) {
+    const services = data.getAll('service').map(t).join(', ');
+    const line = (labelKey, value) => (String(value || '').trim() ? `${t(labelKey)}: ${String(value).trim()}` : '');
+    return [
+      t('form.intro'), '',
+      line('form.name', data.get('name')), line('form.company', data.get('company')),
+      line('form.phone', data.get('phone')), line('form.email', data.get('email')),
+      line('form.service', services), line('form.from', data.get('from')), line('form.to', data.get('to')),
+      line('form.cargo', data.get('cargo')),
+    ].filter((l, i) => l || i === 1).join('\n');
+  }
+
+  function validate(form, data) {
+    const required = ['name', 'phone', 'from', 'to'];
+    const missing = required.filter((name) => !String(data.get(name) || '').trim());
+    form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+    missing.forEach((name) => form.elements[name].setAttribute('aria-invalid', 'true'));
+    if (missing.length) {
+      form.elements[missing[0]].focus();
+      return t('form.required');
+    }
+    const email = String(data.get('email') || '').trim();
+    if (email && !EMAIL_PATTERN.test(email)) {
+      form.elements.email.setAttribute('aria-invalid', 'true');
+      form.elements.email.focus();
+      return t('form.invalidEmail');
+    }
+    return '';
+  }
+
+  function onSubmit(e) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const errorEl = document.getElementById('form-error');
+    const error = validate(form, data);
+    errorEl.hidden = !error;
+    errorEl.textContent = error;
+    if (error) return;
+
+    const message = buildMessage(data);
+    const via = e.submitter && e.submitter.dataset.send === 'email' ? 'email' : 'whatsapp';
+    if (via === 'email') {
+      window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`${t('form.subject')} — ${data.get('name')}`)}&body=${encodeURIComponent(message)}`;
+    } else {
+      window.open(whatsappUrl(message), '_blank', 'noopener');
+    }
+  }
+
+  /* ---------- header, menu, motion ---------- */
+  function bindHeader() {
+    const header = document.querySelector('.nav');
+    const update = () => header.classList.toggle('is-scrolled', window.scrollY > HEADER_SCROLL_OFFSET);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+
+    const toggle = document.getElementById('menu-toggle');
+    const nav = document.getElementById('nav-links');
+    const setOpen = (open) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('menu-open', open);
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    nav.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+  }
+
+  function bindReveal() {
+    const items = document.querySelectorAll('.reveal');
+    if (reducedMotion.matches || !('IntersectionObserver' in window)) {
+      items.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    items.forEach((el) => observer.observe(el));
+  }
+
+  // Tile links preselect the matching service in the quote form.
+  function bindServiceLinks() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('[data-service]');
+      if (!link) return;
+      const box = document.querySelector(`#quote-form input[name="service"][value="${link.dataset.service}"]`);
+      if (box) box.checked = true;
+    });
+  }
+
+  function init() {
+    const urlLang = new URLSearchParams(window.location.search).get('lang');
+    const browserLang = (navigator.language || '').toLowerCase().startsWith('ar') ? 'ar' : 'en';
+    applyLanguage(urlLang || storage.get() || browserLang);
+    document.getElementById('lang-toggle').addEventListener('click', () => applyLanguage(lang === 'ar' ? 'en' : 'ar'));
+    document.getElementById('quote-form').addEventListener('submit', onSubmit);
+    bindHeader();
+    bindReveal();
+    bindServiceLinks();
+    const globe = document.getElementById('globe');
+    if (globe && window.NB_GLOBE) window.NB_GLOBE.mount(globe, { reducedMotion: reducedMotion.matches });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
