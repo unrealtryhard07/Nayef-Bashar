@@ -1,4 +1,5 @@
-/* Site behaviour: language switch, contact details, quote form, header state, reveal-on-scroll. */
+/* Site behaviour: language switch, contact details, legal facts, quote form, header state, reveal-on-scroll.
+   Shared by index.html, terms.html and privacy.html — every feature checks that its elements exist. */
 (function () {
   'use strict';
 
@@ -9,9 +10,12 @@
   const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const HEADER_SCROLL_OFFSET = 24;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const page = document.documentElement.dataset.page || 'home';
 
   let lang = 'en';
   const t = (key) => (I18N[lang] && I18N[lang][key]) ?? I18N.en[key] ?? key;
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => document.querySelectorAll(selector);
 
   const storage = {
     get: () => { try { return localStorage.getItem(LANG_KEY); } catch { return null; } },
@@ -24,35 +28,57 @@
     const root = document.documentElement;
     root.lang = lang;
     root.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.title = t('meta.title');
+    document.title = t(page === 'home' ? 'meta.title' : `meta.title.${page}`);
     const year = String(new Date().getFullYear());
 
-    document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n).replace('{year}', year); });
-    // Only trusted strings from i18n.js are used here (they contain <em> accents).
-    document.querySelectorAll('[data-i18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
-    document.getElementById('lang-toggle').setAttribute('aria-label', t('lang.label'));
+    $$('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n).replace('{year}', year); });
+    // Only trusted strings from i18n.js are used here (they contain <span>, <br> and internal links).
+    $$('[data-i18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+    $$('[data-i18n-placeholder]').forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+    $$('[data-i18n-label]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.i18nLabel)); });
+    $('#lang-toggle').setAttribute('aria-label', t('lang.label'));
     fillContacts();
     storage.set(lang);
   }
 
   /* ---------- contact details ---------- */
-  const whatsappUrl = (text = '') => `https://wa.me/${String(SITE.whatsapp).replace(/\D/g, '')}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
+  const digits = (value) => String(value).replace(/\D/g, '');
+  const whatsappUrl = (text = '') => `https://wa.me/${digits(SITE.whatsapp)}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
+
+  function setLink(el, text, href) {
+    el.textContent = text;
+    el.href = href;
+    el.dir = 'ltr';
+  }
 
   function fillContacts() {
-    const phone = document.querySelector('[data-contact="phone"]');
-    phone.textContent = SITE.phone;
-    phone.href = `tel:${SITE.phone.replace(/[^\d+]/g, '')}`;
-    phone.dir = 'ltr';
-    const wa = document.querySelector('[data-contact="whatsapp"]');
-    wa.textContent = `+${String(SITE.whatsapp).replace(/\D/g, '')}`;
-    wa.dir = 'ltr';
-    const email = document.querySelector('[data-contact="email"]');
-    email.textContent = SITE.email;
-    email.href = `mailto:${SITE.email}`;
-    document.querySelector('[data-contact="address"]').textContent = SITE.address[lang];
-    document.querySelector('[data-contact="hours"]').textContent = SITE.hours[lang];
-    document.querySelectorAll('[data-whatsapp]').forEach((a) => { a.href = whatsappUrl(); });
+    $$('[data-contact="phone"]').forEach((el) => setLink(el, SITE.phone, `tel:${SITE.phone.replace(/[^\d+]/g, '')}`));
+    $$('[data-contact="whatsapp"]').forEach((el) => setLink(el, SITE.whatsappDisplay || `+${digits(SITE.whatsapp)}`, whatsappUrl()));
+    $$('[data-contact="email"]').forEach((el) => setLink(el, SITE.email, `mailto:${SITE.email}`));
+    $$('[data-contact="address"]').forEach((el) => { el.textContent = SITE.address[lang]; });
+    $$('[data-contact="hours"]').forEach((el) => { el.textContent = SITE.hours[lang]; });
+    $$('[data-contact="map"]').forEach((el) => {
+      el.hidden = !SITE.mapUrl;
+      if (SITE.mapUrl) el.href = SITE.mapUrl;
+    });
+    $$('[data-whatsapp]').forEach((a) => { a.href = whatsappUrl(); });
+  }
+
+  /* ---------- legal facts (hidden until filled in i18n.js) ---------- */
+  function renderFacts() {
+    const legal = SITE.legal || {};
+    const values = {
+      founded: legal.founded,
+      cr: legal.crNumber,
+      licence: legal.licenceNumber,
+      customs: legal.customsLicence,
+      memberships: (legal.memberships || []).join(' · '),
+    };
+    $$('[data-fact]').forEach((el) => {
+      const value = String(values[el.dataset.fact] || '').trim();
+      el.textContent = value;
+      (el.closest('[data-fact-row]') || el).hidden = !value;
+    });
   }
 
   /* ---------- quote form ---------- */
@@ -90,7 +116,7 @@
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
-    const errorEl = document.getElementById('form-error');
+    const errorEl = $('#form-error');
     const error = validate(form, data);
     errorEl.hidden = !error;
     errorEl.textContent = error;
@@ -107,13 +133,14 @@
 
   /* ---------- header, menu, motion ---------- */
   function bindHeader() {
-    const header = document.querySelector('.nav');
+    const header = $('.nav');
     const update = () => header.classList.toggle('is-scrolled', window.scrollY > HEADER_SCROLL_OFFSET);
     update();
     window.addEventListener('scroll', update, { passive: true });
 
-    const toggle = document.getElementById('menu-toggle');
-    const nav = document.getElementById('nav-links');
+    const toggle = $('#menu-toggle');
+    const nav = $('#nav-links');
+    if (!toggle || !nav) return;
     const setOpen = (open) => {
       toggle.setAttribute('aria-expanded', String(open));
       document.body.classList.toggle('menu-open', open);
@@ -124,7 +151,7 @@
   }
 
   function bindReveal() {
-    const items = document.querySelectorAll('.reveal');
+    const items = $$('.reveal');
     if (reducedMotion.matches || !('IntersectionObserver' in window)) {
       items.forEach((el) => el.classList.add('is-visible'));
       return;
@@ -144,7 +171,7 @@
     document.addEventListener('click', (e) => {
       const link = e.target.closest('[data-service]');
       if (!link) return;
-      const box = document.querySelector(`#quote-form input[name="service"][value="${link.dataset.service}"]`);
+      const box = $(`#quote-form input[name="service"][value="${link.dataset.service}"]`);
       if (box) box.checked = true;
     });
   }
@@ -153,12 +180,14 @@
     const urlLang = new URLSearchParams(window.location.search).get('lang');
     const browserLang = (navigator.language || '').toLowerCase().startsWith('ar') ? 'ar' : 'en';
     applyLanguage(urlLang || storage.get() || browserLang);
-    document.getElementById('lang-toggle').addEventListener('click', () => applyLanguage(lang === 'ar' ? 'en' : 'ar'));
-    document.getElementById('quote-form').addEventListener('submit', onSubmit);
+    renderFacts();
+    $('#lang-toggle').addEventListener('click', () => applyLanguage(lang === 'ar' ? 'en' : 'ar'));
+    const form = $('#quote-form');
+    if (form) form.addEventListener('submit', onSubmit);
     bindHeader();
     bindReveal();
     bindServiceLinks();
-    const globe = document.getElementById('globe');
+    const globe = $('#globe');
     if (globe && window.NB_GLOBE) window.NB_GLOBE.mount(globe, { reducedMotion: reducedMotion.matches });
   }
 

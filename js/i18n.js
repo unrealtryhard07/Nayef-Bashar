@@ -3,16 +3,28 @@
    Replace every value marked TODO before publishing.
    ========================================================================== */
 window.SITE = {
-  phone: '+965 0000 0000',            // TODO: phone number as it should be displayed
-  whatsapp: '96500000000',            // TODO: WhatsApp number, digits only with country code
-  email: 'info@yourdomain.com',       // TODO: business email
+  phone: '+965 2245 4651',            // phone number as it should be displayed
+  whatsapp: '96555116209',            // WhatsApp number, digits only with country code
+  whatsappDisplay: '+965 5511 6209',  // WhatsApp number as it should be displayed
+  email: 'asad.bhatti@nayefbashar.com', // business email
   address: {
     en: 'Kuwait City, State of Kuwait', // TODO: head office address
     ar: 'مدينة الكويت، دولة الكويت',
   },
+  mapUrl: '',                         // TODO: Google Maps link to the office (leave '' to hide "Open in Maps")
   hours: {
     en: 'Sunday – Thursday, 8:00 AM – 5:00 PM', // TODO: working hours
     ar: 'الأحد – الخميس، ٨:٠٠ صباحاً – ٥:٠٠ مساءً',
+  },
+
+  /* Legal facts from your official documents. Anything left '' (or []) is hidden
+     everywhere on the site, so nothing unconfirmed is ever published. */
+  legal: {
+    crNumber: '',          // TODO: Commercial Registration (السجل التجاري) number
+    licenceNumber: '',     // TODO: MOCI commercial licence number
+    customsLicence: '',    // TODO: customs broker licence number — leave '' if clearance goes through a licensed broker
+    founded: '',           // TODO: year the establishment was founded, e.g. '2012'
+    memberships: [],       // TODO: only bodies you actually belong to, e.g. ['FIATA']
   },
 };
 
@@ -89,7 +101,32 @@ window.I18N = {
     'why3.body': 'Sea, air and land combined into routes that connect any origin to any destination.',
     'why4.title': 'Arabic & English',
     'why4.body': 'Clear communication and documents in the language you prefer.',
-    'quote.title': 'Get a quote.',
+    'nav.about': 'About',
+    'nav.faq': 'FAQ',
+    'about.kicker': 'About us',
+    'about.title': 'A Kuwaiti establishment, working as your agent.',
+    'about.body': 'Nayef Bashar Trading Est. is based in Kuwait. We act on your behalf as a commission agent — arranging carriers, bookings, documents and customs clearance, and staying your single point of contact from pickup to delivery.',
+    'about.body2': 'Every quote is prepared for your cargo and your route. You deal directly with the people handling your shipment, in Arabic or English.',
+    'fact.base': 'Based in',
+    'fact.baseValue': 'Kuwait',
+    'fact.founded': 'Established',
+    'fact.cr': 'Commercial Registration',
+    'fact.licence': 'Commercial licence',
+    'fact.customs': 'Customs broker licence',
+    'fact.memberships': 'Memberships',
+    'faq.title': 'Questions, answered.',
+    'faq.q1': 'Which documents do I need for customs clearance?',
+    'faq.a1': 'Usually a commercial invoice, a packing list, a certificate of origin and the transport document — bill of lading (sea), air waybill (air) or CMR (road). Some goods such as food, medicines, chemicals or electronics also need approvals from the relevant authority. Tell us what you are shipping and we will send you the exact list.',
+    'faq.q2': 'Which goods cannot be shipped into Kuwait?',
+    'faq.a2': 'Prohibited items include alcohol, pork products, narcotics, gambling equipment, counterfeit goods and material contrary to public morals. Other goods — for example weapons, medicines, some foods and chemicals — are restricted and need a permit. Rules change, so send us a description and we will confirm before you book.',
+    'faq.q3': 'Who pays customs duties?',
+    'faq.a3': 'The importer pays duties and taxes unless agreed otherwise in writing. Under the GCC common customs tariff most goods are charged 5% of their value, while some are exempt and a few carry higher rates. We confirm the expected charges with your quote.',
+    'faq.q4': 'How long is a quote valid?',
+    'faq.a4': 'Each quote states its validity. Freight rates depend on carrier space, fuel and currency surcharges, so we reconfirm the price before booking if the validity has passed.',
+    'faq.q5': 'Is my cargo insured?',
+    'faq.a5': 'Cargo insurance is not included unless you ask for it. We can arrange cover for the full value of your goods — just mention it when you request a quote.',
+    'faq.q6': 'How will I know where my shipment is?',
+    'faq.a6': 'We send you an update by WhatsApp or email at every milestone — pickup, departure, arrival, clearance and delivery — and you can message us any time.',
     'quote.lead': "Share the details and we'll reply with a route and a price. Your request opens in WhatsApp or email — nothing is stored on this site.",
     'form.name': 'Full name',
     'form.company': 'Company',
@@ -108,16 +145,26 @@ window.I18N = {
     'form.invalidEmail': 'That email address doesn’t look right.',
     'form.subject': 'Quote request',
     'form.intro': 'Hello Nayef Bashar Trading, I would like a quote.',
+    'form.consent': 'By sending, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Notice</a>.',
     'contact.title': "Let's move your cargo.",
     'contact.phone': 'Phone',
     'contact.whatsapp': 'WhatsApp',
     'contact.email': 'Email',
     'contact.office': 'Head office',
     'contact.hours': 'Hours',
+    'contact.map': 'Open in Maps',
+    'wa.float': 'Chat with us on WhatsApp',
     'footer.services': 'Services',
     'footer.company': 'Company',
+    'footer.legal': 'Legal',
+    'footer.terms': 'Terms of Service',
+    'footer.privacy': 'Privacy Notice',
+    'footer.cr': 'CR No.',
     'footer.copy': 'Copyright © {year} Nayef Bashar Trading Est. All rights reserved.',
+    'legal.home': 'Home',
     'meta.title': 'Nayef Bashar Trading Est. — Global Freight, Customs & Supply Chain',
+    'meta.title.terms': 'Terms of Service — Nayef Bashar Trading Est.',
+    'meta.title.privacy': 'Privacy Notice — Nayef Bashar Trading Est.',
   },
   ar: {
     skip: 'انتقل إلى المحتوى',
@@ -190,6 +237,32 @@ window.I18N = {
     'why3.body': 'نجمع البحري والجوي والبري في مسارات تربط أي منشأ بأي وجهة.',
     'why4.title': 'العربية والإنجليزية',
     'why4.body': 'تواصل ومستندات واضحة باللغة التي تفضلها.',
+    'nav.about': 'من نحن',
+    'nav.faq': 'الأسئلة الشائعة',
+    'about.kicker': 'من نحن',
+    'about.title': 'مؤسسة كويتية تعمل وكيلاً عنك.',
+    'about.body': 'مؤسسة نايف بشر تجارية مقرها الكويت. نعمل نيابةً عنك كوكيل بالعمولة — نرتب الناقلين والحجوزات والمستندات والتخليص الجمركي، ونبقى جهة تواصلك الوحيدة من الاستلام حتى التسليم.',
+    'about.body2': 'كل عرض سعر يُعدّ خصيصاً لشحنتك ومسارك. تتعامل مباشرة مع من يتولى شحنتك، بالعربية أو الإنجليزية.',
+    'fact.base': 'المقر',
+    'fact.baseValue': 'الكويت',
+    'fact.founded': 'سنة التأسيس',
+    'fact.cr': 'السجل التجاري',
+    'fact.licence': 'الرخصة التجارية',
+    'fact.customs': 'رخصة التخليص الجمركي',
+    'fact.memberships': 'العضويات',
+    'faq.title': 'أسئلة وأجوبة.',
+    'faq.q1': 'ما المستندات المطلوبة للتخليص الجمركي؟',
+    'faq.a1': 'عادةً الفاتورة التجارية، وقائمة التعبئة، وشهادة المنشأ، ومستند النقل — بوليصة الشحن (بحري) أو بوليصة الشحن الجوي (جوي) أو إرسالية CMR (بري). وتحتاج بعض البضائع مثل الأغذية والأدوية والمواد الكيميائية والإلكترونيات إلى موافقات من الجهة المختصة. أخبرنا بما تشحنه وسنرسل لك القائمة الدقيقة.',
+    'faq.q2': 'ما البضائع التي لا يمكن شحنها إلى الكويت؟',
+    'faq.a2': 'من المواد الممنوعة: المشروبات الكحولية، ومنتجات لحم الخنزير، والمخدرات، وأدوات القمار، والبضائع المقلدة، وما يخالف الآداب العامة. وهناك بضائع مقيدة تحتاج إلى تصريح، مثل الأسلحة والأدوية وبعض الأغذية والمواد الكيميائية. تتغير الأنظمة، لذا أرسل لنا وصف البضاعة وسنؤكد لك قبل الحجز.',
+    'faq.q3': 'من يدفع الرسوم الجمركية؟',
+    'faq.a3': 'يدفع المستورد الرسوم والضرائب ما لم يُتفق على غير ذلك كتابةً. وفق التعرفة الجمركية الموحدة لدول مجلس التعاون تخضع معظم البضائع لرسم ٥٪ من قيمتها، وبعضها معفى وقليل منها بنسب أعلى. نؤكد لك الرسوم المتوقعة مع عرض السعر.',
+    'faq.q4': 'ما مدة صلاحية عرض السعر؟',
+    'faq.a4': 'تُذكر مدة الصلاحية في كل عرض. تعتمد أسعار الشحن على توفر المساحة لدى الناقل ورسوم الوقود والعملة، لذا نعيد تأكيد السعر قبل الحجز إذا انتهت الصلاحية.',
+    'faq.q5': 'هل شحنتي مؤمَّن عليها؟',
+    'faq.a5': 'التأمين على البضائع غير مشمول ما لم تطلبه. يمكننا ترتيب تغطية بكامل قيمة بضاعتك — فقط اذكر ذلك عند طلب عرض السعر.',
+    'faq.q6': 'كيف أعرف أين شحنتي؟',
+    'faq.a6': 'نرسل لك تحديثاً عبر واتساب أو البريد الإلكتروني في كل مرحلة — الاستلام والمغادرة والوصول والتخليص والتسليم — ويمكنك مراسلتنا في أي وقت.',
     'quote.title': 'اطلب عرض سعر.',
     'quote.lead': 'شاركنا التفاصيل وسنرد عليك بمسار وسعر. يُفتح طلبك في واتساب أو البريد الإلكتروني — لا يُحفظ أي شيء على هذا الموقع.',
     'form.name': 'الاسم الكامل',
@@ -209,15 +282,25 @@ window.I18N = {
     'form.invalidEmail': 'يبدو أن البريد الإلكتروني غير صحيح.',
     'form.subject': 'طلب عرض سعر',
     'form.intro': 'مرحباً مؤسسة نايف بشر تجارية، أرغب في الحصول على عرض سعر.',
+    'form.consent': 'بإرسال الطلب فإنك توافق على <a href="terms.html">شروط الخدمة</a> و<a href="privacy.html">إشعار الخصوصية</a>.',
     'contact.title': 'لننقل شحنتك.',
     'contact.phone': 'الهاتف',
     'contact.whatsapp': 'واتساب',
     'contact.email': 'البريد الإلكتروني',
     'contact.office': 'المكتب الرئيسي',
     'contact.hours': 'ساعات العمل',
+    'contact.map': 'افتح في الخرائط',
+    'wa.float': 'تحدث معنا عبر واتساب',
     'footer.services': 'الخدمات',
     'footer.company': 'الشركة',
+    'footer.legal': 'قانوني',
+    'footer.terms': 'شروط الخدمة',
+    'footer.privacy': 'إشعار الخصوصية',
+    'footer.cr': 'سجل تجاري رقم',
     'footer.copy': 'حقوق النشر © {year} مؤسسة نايف بشر تجارية. جميع الحقوق محفوظة.',
+    'legal.home': 'الرئيسية',
     'meta.title': 'مؤسسة نايف بشر تجارية — شحن عالمي وتخليص جمركي وسلاسل إمداد',
+    'meta.title.terms': 'شروط الخدمة — مؤسسة نايف بشر تجارية',
+    'meta.title.privacy': 'إشعار الخصوصية — مؤسسة نايف بشر تجارية',
   },
 };
