@@ -344,6 +344,59 @@ const SERVICES = [
       ],
     },
   },
+  {
+    key: 'freehand',
+    slug: 'freehand-shipments',
+    related: ['ocean', 'customs'],
+    en: {
+      title: 'Freehand Shipments',
+      kicker: 'Shipper-controlled · CFR · CIF',
+      lead: 'We choose the carrier, the routing and the schedule, and arrange the main international freight — one partner in control from booking to arrival.',
+      metaDescription: 'Freehand shipments from Kuwait: the shipper’s forwarder selects the carrier, routing and schedule and arranges the main freight under terms like CFR or CIF, with Nayef Bashar Trading Est.',
+      included: [
+        { title: 'Carrier selection', body: 'We choose the shipping line or airline that fits your cargo, budget and deadline.' },
+        { title: 'Routing and schedule', body: 'We plan the transit route and sailing or flight dates around your delivery date.' },
+        { title: 'Main freight arranged and paid', body: 'The international freight is booked and paid at origin, as CFR and CIF terms require.' },
+        { title: 'Cargo insurance under CIF', body: 'When you sell CIF, we arrange the insurance cover the term requires.' },
+      ],
+      steps: [
+        { title: 'Share the details', body: 'Goods, weight and volume, origin, destination, and the Incoterm of your sale.' },
+        { title: 'We choose carrier and route', body: 'We compare options and recommend the carrier, routing and schedule.' },
+        { title: 'Booking and departure', body: 'We book space, prepare the documents and load at origin.' },
+        { title: 'Arrival hand-over', body: 'We follow the cargo to destination and hand over to the buyer or their agent.' },
+      ],
+      documents: ['Commercial invoice', 'Packing list', 'Sales contract or proforma showing the Incoterm', 'Insurance certificate (for CIF)', 'Permits or approvals for restricted goods'],
+      faqs: [
+        { q: 'What is the difference between freehand and nominated cargo?', a: 'In a freehand shipment, the shipper or their forwarder chooses the carrier, routing and schedule. In a nominated shipment, the buyer chooses their own carrier or forwarder, and the shipper must follow the buyer’s booking instructions.' },
+        { q: 'Which Incoterms usually go with freehand shipments?', a: 'Terms where the seller arranges and pays for the main transport, such as CFR and CIF (or CPT and CIP for other modes). Under CIF and CIP the seller also arranges insurance.' },
+        { q: 'Will the buyer still see the shipment details?', a: 'Yes. We share the carrier, booking and bill of lading details so the buyer can plan clearance and collection at destination.' },
+      ],
+    },
+    ar: {
+      title: 'شحنات فري هاند',
+      kicker: 'بتحكم الشاحن · CFR · CIF',
+      lead: 'نختار الناقل والمسار والموعد، ونرتب الشحن الدولي الرئيسي — شريك واحد يتحكم بالشحنة من الحجز حتى الوصول.',
+      metaDescription: 'شحنات فري هاند من الكويت: يختار وكيل الشحن التابع للشاحن الناقل والمسار والموعد ويرتب الشحن الرئيسي وفق شروط مثل CFR أو CIF، مع مؤسسة نايف بشر تجارية.',
+      included: [
+        { title: 'اختيار الناقل', body: 'نختار خط الشحن أو شركة الطيران المناسبة لبضاعتك وميزانيتك وموعدك.' },
+        { title: 'المسار والجدول', body: 'نخطط مسار العبور ومواعيد الإبحار أو الطيران وفق موعد التسليم.' },
+        { title: 'ترتيب الشحن الرئيسي ودفعه', body: 'يُحجز الشحن الدولي ويُدفع في بلد المنشأ، كما تتطلب شروط CFR وCIF.' },
+        { title: 'تأمين البضاعة وفق CIF', body: 'عند البيع بشرط CIF نرتب التغطية التأمينية التي يتطلبها الشرط.' },
+      ],
+      steps: [
+        { title: 'شاركنا التفاصيل', body: 'البضاعة، والوزن والحجم، والمنشأ، والوجهة، وشرط التسليم في عقد البيع.' },
+        { title: 'نختار الناقل والمسار', body: 'نقارن الخيارات ونقترح الناقل والمسار والموعد.' },
+        { title: 'الحجز والمغادرة', body: 'نحجز المساحة ونجهز المستندات ونحمّل البضاعة في المنشأ.' },
+        { title: 'التسليم عند الوصول', body: 'نتابع البضاعة حتى الوجهة ونسلّمها للمشتري أو وكيله.' },
+      ],
+      documents: ['الفاتورة التجارية', 'قائمة التعبئة', 'عقد البيع أو الفاتورة المبدئية موضحاً فيها شرط التسليم', 'شهادة التأمين (لشرط CIF)', 'التصاريح أو الموافقات للبضائع المقيدة'],
+      faqs: [
+        { q: 'ما الفرق بين شحنات فري هاند والشحنات المُسمّاة (Nominated)؟', a: 'في شحنة فري هاند يختار الشاحن أو وكيل الشحن التابع له الناقل والمسار والموعد. أما في الشحنة المُسمّاة فيختار المشتري الناقل أو وكيل الشحن الخاص به، ويلتزم الشاحن بتعليمات الحجز التي يحددها المشتري.' },
+        { q: 'ما شروط التسليم التي ترتبط عادةً بشحنات فري هاند؟', a: 'الشروط التي يرتب فيها البائع النقل الرئيسي ويدفع تكلفته، مثل CFR وCIF (أو CPT وCIP لوسائل النقل الأخرى). وفي شرطي CIF وCIP يرتب البائع التأمين أيضاً.' },
+        { q: 'هل يطّلع المشتري على تفاصيل الشحنة؟', a: 'نعم. نشارك بيانات الناقل والحجز وبوليصة الشحن ليتمكن المشتري من التخطيط للتخليص والاستلام في بلد الوصول.' },
+      ],
+    },
+  },
 ];
 
 module.exports = { LABELS, SERVICES };

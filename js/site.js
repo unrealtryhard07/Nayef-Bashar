@@ -178,7 +178,7 @@
   }
 
   // Service pages link to index.html?service=<key>#quote; tick that service in the form.
-  const SERVICE_KEYS = ['ocean', 'air', 'land', 'customs', 'trade', 'supply'];
+  const SERVICE_KEYS = ['ocean', 'air', 'land', 'customs', 'trade', 'supply', 'freehand'];
   function preselectService() {
     const key = new URLSearchParams(window.location.search).get('service');
     if (!SERVICE_KEYS.includes(key)) return;
