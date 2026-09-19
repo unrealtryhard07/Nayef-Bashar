@@ -281,7 +281,8 @@ html[lang='ar'] .faq-list summary { letter-spacing: 0; }
 /* ---------- footer ---------- */
 .footer { background: var(--bg-gray); color: var(--text-2); font-size: 12px; padding-block: 40px 28px; }
 .footer-top { display: flex; justify-content: space-between; gap: 32px; padding-bottom: 24px; border-bottom: 1px solid #d2d2d7; }
-.footer-logo { width: 150px; height: auto; mix-blend-mode: multiply; }
+/* flex: none + align-self stop the footer row from stretching or squeezing the logo out of proportion. */
+.footer-logo { flex: none; align-self: flex-start; width: clamp(200px, 18vw, 240px); height: auto; mix-blend-mode: multiply; }
 .footer-nav { display: flex; gap: clamp(32px, 8vw, 96px); }
 .footer-nav div { display: grid; gap: 8px; align-content: start; }
 .footer-nav h3 { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
@@ -304,6 +305,36 @@ html[lang='en'] .legal-doc[lang='ar'], html[lang='ar'] .legal-doc[lang='en'] { d
 .legal-doc ul { margin: 0; padding-inline-start: 1.25em; }
 .legal-doc a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
 .legal-note { margin-top: 48px; padding: 20px 24px; border-radius: var(--radius-field); background: var(--bg-gray); font-size: var(--fs-small); color: var(--text-2); }
+/* ---------- service pages (services/*.html, generated) ---------- */
+html[lang='en'] .lang-block[lang='ar'], html[lang='ar'] .lang-block[lang='en'] { display: none; }
+.svc-hero {
+  padding: calc(var(--nav-h) + clamp(64px, 9vw, 128px)) 0 clamp(72px, 9vw, 128px); color: var(--text-on-dark);
+  background: radial-gradient(60% 80% at 85% 100%, rgba(19, 48, 107, 0.6), transparent 70%), var(--bg-black);
+}
+.svc-hero .display { margin-top: 8px; font-size: clamp(44px, 2.6rem + 4vw, 96px); }
+.svc-hero .hero-lead { margin: 20px 0 36px; }
+.svc-h2 { font-size: clamp(32px, 1.6rem + 2vw, 56px); margin-bottom: clamp(32px, 4vw, 56px); }
+.svc-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.svc-card { display: grid; gap: 8px; align-content: start; padding: clamp(28px, 3vw, 40px); border-radius: 22px; background: var(--bg-gray); }
+.svc-card h3 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.svc-card p { color: var(--text-2); }
+.svc-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
+.svc-split .svc-h2 { margin-bottom: 0; }
+.svc-docs li { position: relative; padding: 18px 0; padding-inline-start: 36px; border-top: 1px solid var(--hairline); font-size: 19px; }
+.svc-docs li:last-child { border-bottom: 1px solid var(--hairline); }
+.svc-docs li::before { content: '✓'; position: absolute; inset-inline-start: 0; color: var(--blue); font-weight: 600; }
+.svc-related { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.svc-related-link {
+  display: grid; gap: 6px; height: 100%; padding: 28px; border-radius: 22px; background: var(--bg-gray);
+  transition: transform 300ms var(--ease), box-shadow 300ms var(--ease);
+}
+.svc-related-link strong { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.svc-related-link:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.3); }
+.svc-related-link--all { align-content: end; background: var(--navy); color: var(--text-on-dark); }
+.svc-related-link--all strong::after { content: ' →'; }
+html[dir='rtl'] .svc-related-link--all strong::after { content: ' ←'; }
+.tile-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 6px; }
+.tile-links .link-arrow { margin-top: 0; }
 .nav--solid { background: rgba(251, 251, 253, 0.8); color: var(--text); box-shadow: 0 0.5px 0 var(--hairline); }
 
 /* ---------- reveal ---------- */
@@ -339,6 +370,8 @@ html[lang='en'] .legal-doc[lang='ar'], html[lang='ar'] .legal-doc[lang='en'] { d
   .footer-top { flex-direction: column; }
   .footer-nav { flex-wrap: wrap; gap: 28px 48px; }
   .faq-list summary { font-size: 18px; padding-block: 20px; }
+  .svc-cards, .svc-split { grid-template-columns: 1fr; }
+  .svc-related { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   .steps, .why-grid, .contact-grid { grid-template-columns: 1fr; }

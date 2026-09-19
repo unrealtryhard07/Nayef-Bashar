@@ -28,7 +28,8 @@
     const root = document.documentElement;
     root.lang = lang;
     root.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.title = t(page === 'home' ? 'meta.title' : `meta.title.${page}`);
+    const pageTitle = root.dataset[lang === 'ar' ? 'titleAr' : 'titleEn'];
+    document.title = pageTitle || t(page === 'home' ? 'meta.title' : `meta.title.${page}`);
     const year = String(new Date().getFullYear());
 
     $$('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n).replace('{year}', year); });
@@ -176,6 +177,15 @@
     });
   }
 
+  // Service pages link to index.html?service=<key>#quote; tick that service in the form.
+  const SERVICE_KEYS = ['ocean', 'air', 'land', 'customs', 'trade', 'supply'];
+  function preselectService() {
+    const key = new URLSearchParams(window.location.search).get('service');
+    if (!SERVICE_KEYS.includes(key)) return;
+    const box = $(`#quote-form input[name="service"][value="svc.${key}.title"]`);
+    if (box) box.checked = true;
+  }
+
   function init() {
     const urlLang = new URLSearchParams(window.location.search).get('lang');
     const browserLang = (navigator.language || '').toLowerCase().startsWith('ar') ? 'ar' : 'en';
@@ -184,6 +194,7 @@
     $('#lang-toggle').addEventListener('click', () => applyLanguage(lang === 'ar' ? 'en' : 'ar'));
     const form = $('#quote-form');
     if (form) form.addEventListener('submit', onSubmit);
+    preselectService();
     bindHeader();
     bindReveal();
     bindServiceLinks();
